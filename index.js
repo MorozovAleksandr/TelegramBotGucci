@@ -41,23 +41,23 @@ var questions = [{
     ],
     right_answer: 1
 },
+
 {
-    // title: 'К Вашему аккаунту привязана действующая почта и действующий мобильный телефон?',
-    title: 'Вы хотели бы сдать аккаунт в аренду или продать?',
+    title: 'Ваш аккаунт Facebook заполнен (содержит информацию об учебе или работе, есть фото, друзья, записи на стене)?',
     buttons: [
         [{
-            text: 'Аренда',
-            callback_data: '1_1_0'
+            text: 'Да',
+            callback_data: '1_1'
         }],
         [{
-            text: 'Продажа',
-            callback_data: '1_1_1'
+            text: 'Нет',
+            callback_data: '1_2'
         }],
     ],
     right_answer: 1
 },
 {
-    title: 'Ваш аккаунт Facebook заполнен (содержит информацию об учебе или работе, есть фото, друзья, записи на стене)?',
+    title: 'Вы сдавали ранее аккаунт Facebook в аренду?',
     buttons: [
         [{
             text: 'Да',
@@ -68,22 +68,23 @@ var questions = [{
             callback_data: '2_2'
         }],
     ],
-    right_answer: 1
+    right_answer: 2
 },
 {
-    title: 'Вы сдавали ранее аккаунт Facebook в аренду?',
+    // title: 'К Вашему аккаунту привязана действующая почта и действующий мобильный телефон?',
+    title: 'Вы хотели бы сдать аккаунт в аренду или продать?',
     buttons: [
         [{
-            text: 'Да',
-            callback_data: '3_1'
+            text: 'Аренда',
+            callback_data: '3_1_0'
         }],
         [{
-            text: 'Нет',
-            callback_data: '3_2'
+            text: 'Продажа',
+            callback_data: '3_1_1'
         }],
     ],
-    right_answer: 2
-}
+    right_answer: 1
+},
 ];
 
 function newQuestion(msg) {
@@ -118,7 +119,7 @@ bot.on('callback_query', function onCallbackQuery(msg) {
     var button = answer[1]; // кнопка ответа 0 || 1
     if (questions[index].right_answer == button) {
         for (let i = 0; i < user.length; i++) {
-            if (index == 1) {
+            if (index == 3) {
                 if (user[i].id === msg.from.id) {
                     var typeOfTransaction = answer[2];
                     if (typeOfTransaction == 0) {
