@@ -149,7 +149,7 @@ bot.on('message', function (msg) {
         if (user[i].id === msg.from.id && user[i].countRightAnswer === questions.length) {
             user.instaLogin = msg.text;
             bot.sendMessage(msg.from.id, "Отлично, скоро с вами свяжутся:)");
-            bot.sendMessage(273352112, `${user[i].typeOfTransaction}. Новая заявка! - @${msg.from.username}.(id ${msg.from.id}). Instagram login - ${user.instaLogin}`); //230431843 - hokage, newHokage - 841422237, my - 273352112, new - 869162443
+            bot.sendMessage(869162443, `${user[i].typeOfTransaction}. Новая заявка! - @${msg.from.username}.(id ${msg.from.id}). Instagram login - ${user.instaLogin}`); //230431843 - hokage, newHokage - 841422237, my - 273352112, new - 869162443
             user.splice(i, 1);
             break;
         }
