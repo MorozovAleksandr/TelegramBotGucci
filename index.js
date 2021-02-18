@@ -28,61 +28,62 @@ var menu = {
 };
 
 var questions = [{
-        title: 'Вашему аккаунту Facebook больше 6 месяцев?',
-        buttons: [
-            [{
-                text: 'Да',
-                callback_data: '0_1'
-            }],
-            [{
-                text: 'Нет',
-                callback_data: '0_2'
-            }],
-        ],
-        right_answer: 1
-    },
-    {
-        title: 'К Вашему аккаунту привязана действующая почта и действующий мобильный телефон?',
-        buttons: [
-            [{
-                text: 'Да',
-                callback_data: '1_1'
-            }],
-            [{
-                text: 'Нет',
-                callback_data: '1_2'
-            }],
-        ],
-        right_answer: 1
-    },
-    {
-        title: 'Ваш аккаунт Facebook заполнен (содержит информацию об учебе или работе, есть фото, друзья, записи на стене)?',
-        buttons: [
-            [{
-                text: 'Да',
-                callback_data: '2_1'
-            }],
-            [{
-                text: 'Нет',
-                callback_data: '2_2'
-            }],
-        ],
-        right_answer: 1
-    },
-    {
-        title: 'Вы сдавали ранее аккаунт Facebook в аренду?',
-        buttons: [
-            [{
-                text: 'Да',
-                callback_data: '3_1'
-            }],
-            [{
-                text: 'Нет',
-                callback_data: '3_2'
-            }],
-        ],
-        right_answer: 2
-    }
+    title: 'Вашему аккаунту Facebook больше 6 месяцев?',
+    buttons: [
+        [{
+            text: 'Да',
+            callback_data: '0_1'
+        }],
+        [{
+            text: 'Нет',
+            callback_data: '0_2'
+        }],
+    ],
+    right_answer: 1
+},
+{
+    // title: 'К Вашему аккаунту привязана действующая почта и действующий мобильный телефон?',
+    title: 'Вы хотели бы сдать аккаунт в аренду или продать?',
+    buttons: [
+        [{
+            text: 'Аренда',
+            callback_data: '1_1_0'
+        }],
+        [{
+            text: 'Продажа',
+            callback_data: '1_1_1'
+        }],
+    ],
+    right_answer: 1
+},
+{
+    title: 'Ваш аккаунт Facebook заполнен (содержит информацию об учебе или работе, есть фото, друзья, записи на стене)?',
+    buttons: [
+        [{
+            text: 'Да',
+            callback_data: '2_1'
+        }],
+        [{
+            text: 'Нет',
+            callback_data: '2_2'
+        }],
+    ],
+    right_answer: 1
+},
+{
+    title: 'Вы сдавали ранее аккаунт Facebook в аренду?',
+    buttons: [
+        [{
+            text: 'Да',
+            callback_data: '3_1'
+        }],
+        [{
+            text: 'Нет',
+            callback_data: '3_2'
+        }],
+    ],
+    right_answer: 2
+}
 ];
 
 function newQuestion(msg) {
@@ -95,6 +96,7 @@ function newQuestion(msg) {
         }
     }
     var text = arr.title;
+
     var options = {
         reply_markup: JSON.stringify({
             inline_keyboard: arr.buttons,
@@ -116,6 +118,17 @@ bot.on('callback_query', function onCallbackQuery(msg) {
     var button = answer[1]; // кнопка ответа 0 || 1
     if (questions[index].right_answer == button) {
         for (let i = 0; i < user.length; i++) {
+            if (index == 1) {
+                if (user[i].id === msg.from.id) {
+                    var typeOfTransaction = answer[2];
+                    if (typeOfTransaction == 0) {
+                        user[i].typeOfTransaction = 'Аренда';
+                    }
+                    if (typeOfTransaction == 1) {
+                        user[i].typeOfTransaction = 'Продажа';
+                    }
+                }
+            }
             if (user[i].id === msg.from.id) {
                 user[i].countRightAnswer++;
             }
@@ -136,7 +149,7 @@ bot.on('message', function (msg) {
         if (user[i].id === msg.from.id && user[i].countRightAnswer === questions.length) {
             user.instaLogin = msg.text;
             bot.sendMessage(msg.from.id, "Отлично, скоро с вами свяжутся:)");
-            bot.sendMessage(869162443, `Новая заявка! - @${msg.from.username}.(id ${msg.from.id}). Instagram login - ${user.instaLogin}`); //230431843 - hokage, newHokage - 841422237, my - 273352112, new - 869162443
+            bot.sendMessage(273352112, `${user[i].typeOfTransaction}. Новая заявка! - @${msg.from.username}.(id ${msg.from.id}). Instagram login - ${user.instaLogin}`); //230431843 - hokage, newHokage - 841422237, my - 273352112, new - 869162443
             user.splice(i, 1);
             break;
         }
@@ -177,7 +190,8 @@ function myStart(msg) {
         answerNumber: 0,
         countRightAnswer: 0,
         answerNumberWithAccount: 0,
-        instaLogin: null
+        instaLogin: null,
+        typeOfTransaction: null
     });
     bot.sendMessage(msg.from.id, `Добрый день :) 
 Мы – команда молодых SMM-специалистов. Недавно мы начали развивать направление Facebook Ads и столкнулись с проблемой ограниченных рекламных возможностей в этой социальной сети.
